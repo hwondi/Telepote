@@ -1,0 +1,52 @@
+-- Script Universal de Teleporte Roblox
+-- Funções: Salvar Posição e Teleportar
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+-- Variável para armazenar a posição salva
+local savedPosition = nil
+
+-- Função para salvar a posição atual
+local function savePosition()
+    if humanoidRootPart then
+        savedPosition = humanoidRootPart.CFrame
+        print("✓ Posição salva:", savedPosition)
+        return true
+    else
+        warn("✗ Erro: HumanoidRootPart não encontrado!")
+        return false
+    end
+end
+
+-- Função para teleportar para a posição salva
+local function teleportToSavedPosition()
+    if savedPosition then
+        if humanoidRootPart then
+            humanoidRootPart.CFrame = savedPosition
+            print("✓ Teleportado para a posição salva!")
+            return true
+        else
+            warn("✗ Erro: HumanoidRootPart não encontrado!")
+            return false
+        end
+    else
+        warn("✗ Nenhuma posição salva! Use savePosition() primeiro.")
+        return false
+    end
+end
+
+-- Atualizar referências quando o personagem respawnar
+player.CharacterAdded:Connect(function(newCharacter)
+    character = newCharacter
+    humanoidRootPart = newCharacter:WaitForChild("HumanoidRootPart")
+    print("Personagem respawnado - Referências atualizadas")
+end)
+
+-- Retornar as funções para uso
+return {
+    save = savePosition,
+    teleport = teleportToSavedPosition
+}
